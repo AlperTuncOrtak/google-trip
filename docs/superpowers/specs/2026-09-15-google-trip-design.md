@@ -9,12 +9,12 @@
 
 ## 1. Amaç
 
-Kullanıcının sevdiği aktivitelere, diyetine, bütçesine ve kalkış şehrine göre bir seyahat planı çıkaran mobil uygulama. Plan dört kategoriden oluşur: uçuş, konaklama, aktivite ve yemek. Kullanıcıya uygulama boyunca **Wulfy** adlı maskot eşlik eder. Gelir otel komisyonundan (LiteAPI) ve uçuş affiliate linklerinden (Travelpayouts) gelir.
+Kullanıcının sevdiği aktivitelere, diyetine, bütçesine ve kalkış şehrine göre bir seyahat planı çıkaran mobil uygulama. Plan dört kategoriden oluşur: uçuş, konaklama, aktivite ve yemek. Kullanıcıya uygulama boyunca **Wolfy** adlı maskot eşlik eder. Gelir otel komisyonundan (LiteAPI) ve uçuş affiliate linklerinden (Travelpayouts) gelir.
 
 ## 2. Kapsam
 
 **MVP'de var:**
-- Wulfy (iskelette statik görsel ve konuşma balonu, animasyon sonra eklenecek)
+- Wolfy (iskelette statik görsel ve konuşma balonu, animasyon sonra eklenecek)
 - Uçuş ve konaklama API'leri
 - Kullanıcı profili (tercihler)
 - Aktivite bazlı planlama
@@ -51,7 +51,7 @@ Kullanıcının sevdiği aktivitelere, diyetine, bütçesine ve kalkış şehrin
 | Öneri sayısı | 3 |
 | Arayüz dili | İngilizce |
 | Uygulama adı | Google Trip |
-| Maskot adı | Wulfy |
+| Maskot adı | Wolfy |
 
 ## 4. Claude'un verdiği kararlar (ekip değiştirebilir)
 
@@ -59,9 +59,9 @@ Kullanıcının sevdiği aktivitelere, diyetine, bütçesine ve kalkış şehrin
 |---|---|---|
 | Diyet varsayılanı | Başlangıçta `None` seçili | Diyeti olmayan kullanıcı ek bir işlem yapmadan devam eder |
 | Form doğrulamaları | Home city ve en az 1 aktivite zorunlu. Yolcu sayısı 1–9. Gidiş tarihi bugünden sonra, dönüş gidişten sonra | API'lere geçersiz istek gitmez |
-| Wulfy'nin konuşma metinleri | §5'teki İngilizce cümleler | Maskot kararı bana bırakıldı, metinler kolayca değiştirilebilir |
+| Wolfy'nin konuşma metinleri | §5'teki İngilizce cümleler | Maskot kararı bana bırakıldı, metinler kolayca değiştirilebilir |
 | Komisyon görünürlüğü | Mobilde `DEMO_MODE = true` sabiti. Açıkken otel kartında "We earn ≈ X", uçuş kartında "Affiliate link" etiketi görünür | Jüri gelir modelini canlı görür. Gerçek kullanıcı görünümü için sabit `false` yapılır |
-| Wulfy'nin iskeletteki yeri | Her ekranın üstünde küçük görsel ve konuşma balonu. Yükleme ekranında büyük gösterilir | Maskot kullanıcıya yol gösterir. Animasyon sonra aynı bileşenin içine eklenir |
+| Wolfy'nin iskeletteki yeri | Her ekranın üstünde küçük görsel ve konuşma balonu. Yükleme ekranında büyük gösterilir | Maskot kullanıcıya yol gösterir. Animasyon sonra aynı bileşenin içine eklenir |
 | Uçuş sıralaması | En ucuzdan pahalıya | Otel sıralamasıyla aynı |
 | Gün sayısı | `days = nights` (dönüş tarihi − gidiş tarihi) | Basit ve açıklaması kolay |
 | Öneri ön filtresi | `uçuş fiyatı × kişi ≤ bütçe` | Öneri aşamasında otel fiyatı henüz bilinmiyor |
@@ -80,7 +80,7 @@ Profile ──► Trip ──┬── "Plan my trip" (ülke seçili) ───�
 ```
 
 ### 5.1 Profile (`app/index.tsx`), uygulamanın açılış ekranı
-- **Wulfy:** "Hi, I'm Wulfy! Tell me what you love and I'll sniff out your trip."
+- **Wolfy:** "Hi, I'm Wolfy! Tell me what you love and I'll sniff out your trip."
 - **Home city:** `TextInput` alanı. Kullanıcı yazdıkça (300 ms debounce) `GET /places?term=` çağrılır ve sonuçlar listelenir. Şehir seçilince altında "Currency: PLN" yazar.
 - **Activities (çoklu chip):** Nature & Hiking, Museums & History, Nightlife, Beach & Sea, Adventure Sports, Shopping, Street Food, Art & Concerts
 - **"Anything else?":** serbest metin alanı
@@ -88,7 +88,7 @@ Profile ──► Trip ──┬── "Plan my trip" (ülke seçili) ───�
 - **Continue:** Home city seçilmeden ve en az 1 aktivite (chip ya da metin) girilmeden pasif kalır.
 
 ### 5.2 Trip (`app/trip.tsx`), ana menü
-- **Wulfy:** "What's your budget? I'll make it stretch."
+- **Wolfy:** "What's your budget? I'll make it stretch."
 - **Budget:** sayı girilir, yanında ev para birimi yazar.
 - **Departure date / Return date:** datetimepicker ile seçilir.
 - **Travelers:** 1–9 arası stepper.
@@ -98,15 +98,15 @@ Profile ──► Trip ──┬── "Plan my trip" (ülke seçili) ───�
 - **Doğrulama:** bütçe > 0, dönüş tarihi gidişten sonra, gidiş tarihi bugünden sonra.
 
 ### 5.3 Suggestions (`app/suggestions.tsx`)
-- Açılınca `POST /suggest` çağrılır. Beklerken büyük Wulfy ve "Sniffing out the best deals…" gösterilir.
-- **Wulfy:** "I found 3 places you'll love!"
+- Açılınca `POST /suggest` çağrılır. Beklerken büyük Wolfy ve "Sniffing out the best deals…" gösterilir.
+- **Wolfy:** "I found 3 places you'll love!"
 - 3 kart gösterilir. Her kartta "Japan → Osaka", seçilme gerekçesi ve uçuş fiyatı (`12,400 JPY ≈ 340 PLN`) yazar.
 - Karta dokununca Results ekranına geçilir, şehir hazır olarak gönderilir.
 
 ### 5.4 Results (`app/results.tsx`)
-- Açılınca `POST /plan` çağrılır. Beklerken büyük Wulfy ve "Sniffing out the best deals…" gösterilir.
+- Açılınca `POST /plan` çağrılır. Beklerken büyük Wolfy ve "Sniffing out the best deals…" gösterilir.
 - **Başlık:** şehir, ülke ve AI'ın gerekçesi.
-- **Wulfy:** bütçe yetiyorsa "All of this fits your budget!", yetmiyorsa "It's a bit over budget — here are the cheapest options."
+- **Wolfy:** bütçe yetiyorsa "All of this fits your budget!", yetmiyorsa "It's a bit over budget — here are the cheapest options."
 - **Bütçe çubuğu:** Budget / Flight + Stay / Daily spend × days / Remaining. Her tutar iki para biriminde yazar.
 - **Sekmeler (segment butonları):**
   - **Flights (5):** havayolu, tarihler, aktarma sayısı, fiyat, "Over budget" etiketi, "last seen X ago" notu. Dokununca `Linking.openURL(url)` çalışır.
@@ -114,7 +114,7 @@ Profile ──► Trip ──┬── "Plan my trip" (ülke seçili) ───�
   - **Activities (5):** ad, kısa açıklama. En altta Google Maps kaynakları.
   - **Food (5):** ad, kısa açıklama (diyete uygun). En altta Google Maps kaynakları.
 - Bir kategori hata verdiyse o sekmede "Unavailable right now" yazar, diğer sekmeler normal çalışır.
-- **Hata ekranı:** Wulfy "Oops, I lost the scent. Try again?" der ve "Try again" butonu gösterilir.
+- **Hata ekranı:** Wolfy "Oops, I lost the scent. Try again?" der ve "Try again" butonu gösterilir.
 
 ## 6. Mobil yapı
 
@@ -125,10 +125,10 @@ mobile/
   app/trip.tsx
   app/suggestions.tsx
   app/results.tsx
-  components/Wulfy.tsx   # props: message, size ("small" | "large"); animasyon sonra buraya eklenecek
+  components/Wolfy.tsx   # props: message, size ("small" | "large"); animasyon sonra buraya eklenecek
   lib/store.tsx          # React context: profile, trip, selected suggestion
   lib/api.ts             # BASE_URL, fetch helpers, TypeScript tipleri
-  assets/wulfy.png       # arka planı temizlenmiş PNG
+  assets/wolfy.png       # arka planı temizlenmiş PNG
 ```
 
 ```ts
@@ -326,8 +326,8 @@ Bu işler birbirinden bağımsız, paralel yapılabilir:
    - Kaynakların yanıtta nerede olduğu bulunacak.
    - Structured output çağrısı test edilecek.
 4. **Cloud Run:** GCP projesi ve faturalandırma açılacak, hello-world FastAPI deploy edilecek.
-5. **Expo:** Proje oluşturulacak, Expo Go'da 4 ekran arasında geçiş yapılabilecek, `Wulfy` bileşeni hazırlanacak.
-6. ~~**Wulfy görseli:** Damalı arka plan temizlenecek.~~ **Tamamlandı:** `mobile/assets/wulfy.png`, 601×703, şeffaf PNG (macOS Vision ile ayrıldı).
+5. **Expo:** Proje oluşturulacak, Expo Go'da 4 ekran arasında geçiş yapılabilecek, `Wolfy` bileşeni hazırlanacak.
+6. ~~**Wolfy görseli:** Damalı arka plan temizlenecek.~~ **Tamamlandı:** `mobile/assets/wolfy.png`, 601×703, şeffaf PNG (macOS Vision ile ayrıldı).
 
 ## 16. Bilinen sınırlar
 - Uçuş fiyatları önbellekten gelir, anlık değildir. Ekranda "last seen" notu gösterilir.
@@ -338,5 +338,5 @@ Bu işler birbirinden bağımsız, paralel yapılabilir:
 - Otel rezervasyonu yapılmaz, sadece liste gösterilir.
 
 ## 17. Açık kalan işler
-- Wulfy animasyonu sonraki aşamada yapılacak.
+- Wolfy animasyonu sonraki aşamada yapılacak.
 - İş bölümü bu spec onaylandıktan sonra yapılacak.
