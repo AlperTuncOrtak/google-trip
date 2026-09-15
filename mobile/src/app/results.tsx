@@ -69,7 +69,7 @@ export default function ResultsScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.surface }}>
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 150, gap: 18 }}>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 150, gap: 18, width: "100%", maxWidth: 560, alignSelf: "center" }}>
         <Steps current={2} />
 
         {/* destination hero card */}
@@ -165,7 +165,7 @@ export default function ResultsScreen() {
       </ScrollView>
 
       {/* sticky footer: trip summary pill + share */}
-      <View style={{ position: "absolute", left: 16, right: 16, bottom: 16, gap: 10, alignItems: "center" }}>
+      <View style={{ position: "absolute", left: 16, right: 16, bottom: 16, gap: 10, alignItems: "center", maxWidth: 528, marginHorizontal: "auto" }}>
         <View style={[{ backgroundColor: colors.blueSoft, borderRadius: 999, paddingHorizontal: 14, paddingVertical: 6 }, shadow]}>
           <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: colors.ink }}>
             {`${shortDate(trip.departDate)} – ${shortDate(trip.returnDate)}  |  ${trip.travelers} traveler${trip.travelers > 1 ? "s" : ""}`}

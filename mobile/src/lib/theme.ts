@@ -28,7 +28,7 @@ export const fonts = {
 export const shadow = { boxShadow: "0 8px 24px rgba(26, 115, 232, 0.10)" } as const;
 
 export const ui = StyleSheet.create({
-  page: { flexGrow: 1, backgroundColor: colors.surface, paddingBottom: 40 },
+  page: { flexGrow: 1, backgroundColor: colors.surface, paddingBottom: 40, width: "100%", maxWidth: 560, alignSelf: "center" },
   sheet: {
     marginTop: -28, backgroundColor: colors.surface, borderTopLeftRadius: 28, borderTopRightRadius: 28,
     paddingHorizontal: 16, paddingTop: 20, gap: 18,

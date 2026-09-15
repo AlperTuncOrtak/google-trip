@@ -25,7 +25,7 @@ export default function Layout() {
           headerStyle: { backgroundColor: colors.blueSoft },
           headerShadowVisible: false,
           headerTintColor: colors.blue,
-          contentStyle: { backgroundColor: colors.surface },
+          contentStyle: { backgroundColor: colors.blueSoft },
         }}
       />
     </StoreProvider>
