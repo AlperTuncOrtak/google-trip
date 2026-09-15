@@ -1,8 +1,8 @@
 import { Pressable, Text } from "react-native";
 import { accent, colors, fonts } from "../lib/theme";
 
-export default function Chip({ label, selected, onPress, emoji, tone = 0 }: {
-  label: string; selected: boolean; onPress: () => void; emoji?: string; tone?: number;
+export default function Chip({ label, selected, onPress, emoji, tone = 0, block }: {
+  label: string; selected: boolean; onPress: () => void; emoji?: string; tone?: number; block?: boolean;
 }) {
   const a = accent(tone);
   return (
@@ -16,10 +16,11 @@ export default function Chip({ label, selected, onPress, emoji, tone = 0 }: {
         borderColor: selected ? a.main : colors.line,
         backgroundColor: selected ? a.soft : colors.bg,
         transform: [{ scale: pressed ? 0.96 : 1 }],
+        ...(block ? { width: "100%", borderRadius: 14, paddingVertical: 10 } : null),
       })}
     >
       {emoji && <Text style={{ fontSize: 15 }}>{emoji}</Text>}
-      <Text style={{ fontFamily: selected ? fonts.bodyBold : fonts.bodyMedium, fontSize: 14, color: selected ? a.main : colors.ink }}>
+      <Text numberOfLines={1} style={{ flexShrink: 1, fontFamily: selected ? fonts.bodyBold : fonts.bodyMedium, fontSize: block ? 13 : 14, color: selected ? a.main : colors.ink }}>
         {label}
       </Text>
     </Pressable>

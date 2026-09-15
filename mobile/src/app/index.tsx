@@ -78,9 +78,11 @@ export default function ProfileScreen() {
         </Section>
 
         <Section title="What do you love doing?" hint="select any" index={1}>
-          <View style={ui.row}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", rowGap: 8 }}>
             {ACTIVITIES.map(([a, emoji], i) => (
-              <Chip key={a} label={a} emoji={emoji} tone={i} selected={profile.activities.includes(a)} onPress={() => toggleActivity(a)} />
+              <View key={a} style={{ width: "48.5%" }}>
+                <Chip block label={a} emoji={emoji} tone={i} selected={profile.activities.includes(a)} onPress={() => toggleActivity(a)} />
+              </View>
             ))}
           </View>
         </Section>
