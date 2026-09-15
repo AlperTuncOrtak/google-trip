@@ -4,6 +4,7 @@ import logging
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 import budget
 import currency
@@ -12,6 +13,7 @@ from models import PlanRequest, SuggestRequest
 USE_FIXTURES = True
 FIX = Path(__file__).parent / "fixtures"
 app = FastAPI(title="Google Trip API")
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])  # Expo web preview
 _cache: dict[str, dict] = {}  # ponytail: in-process cache; Redis/Memorystore if >1 instance
 
 
