@@ -26,7 +26,7 @@ export default function Hero({ eyebrow, title, subtitle, pose, children }: {
           <Text style={ui.h1}>{title}</Text>
           {subtitle && <Text style={[ui.body, { color: colors.sub }]}>{subtitle}</Text>}
         </View>
-        {pose && <WolfyAvatar pose={pose} size={96} />}
+        {pose && <WolfyAvatar pose={pose} size={76} />}
       </View>
       {children}
     </View>
@@ -34,7 +34,7 @@ export default function Hero({ eyebrow, title, subtitle, pose, children }: {
 }
 
 const s = StyleSheet.create({
-  hero: { backgroundColor: colors.blueSoft, paddingHorizontal: 20, paddingTop: 12, paddingBottom: 48, overflow: "hidden", gap: 12 },
-  row: { flexDirection: "row", alignItems: "center", gap: 16 },
+  hero: { backgroundColor: colors.blueSoft, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 40, overflow: "hidden", gap: 12 },
+  row: { flexDirection: "row", alignItems: "center", gap: 12 },
   orb: { position: "absolute", borderRadius: 999 },
 });

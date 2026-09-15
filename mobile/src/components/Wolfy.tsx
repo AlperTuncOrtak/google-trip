@@ -43,7 +43,7 @@ const s = StyleSheet.create({
   avatar: { backgroundColor: colors.bg, overflow: "hidden", alignItems: "center", borderWidth: 3, borderColor: colors.bg, ...shadow },
   row: { flexDirection: "row", alignItems: "center", gap: 10 },
   column: { alignItems: "center", gap: 18 },
-  imgLarge: { width: 180, height: 300 },
+  imgLarge: { width: 150, height: 250 },
   bubble: {
     flexShrink: 1, backgroundColor: colors.blueSoft, borderRadius: 20, borderTopLeftRadius: 6,
     paddingHorizontal: 16, paddingVertical: 12,

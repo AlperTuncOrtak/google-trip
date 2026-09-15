@@ -12,7 +12,7 @@ export default function Chip({ label, selected, onPress, emoji, tone = 0 }: {
       accessibilityState={{ selected }}
       style={({ pressed }) => ({
         flexDirection: "row", alignItems: "center", gap: 6,
-        paddingHorizontal: 14, paddingVertical: 9, borderRadius: 999, borderWidth: 1.5,
+        paddingHorizontal: 12, paddingVertical: 8, borderRadius: 999, borderWidth: 1.5,
         borderColor: selected ? a.main : colors.line,
         backgroundColor: selected ? a.soft : colors.bg,
         transform: [{ scale: pressed ? 0.96 : 1 }],

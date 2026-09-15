@@ -62,9 +62,9 @@ export default function ResultsScreen() {
 
       <View style={ui.sheet}>
         <Animated.View entering={FadeInDown.springify()} style={[ui.card, { gap: 14, marginTop: -8 }]}>
-          <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
             <View style={{ flexShrink: 1 }}>
-              <Text style={{ fontFamily: fonts.displayBold, fontSize: 36, color: colors.ink }}>{money(spentHome, cur.home)}</Text>
+              <Text style={{ fontFamily: fonts.displayBold, fontSize: 30, color: colors.ink }}>{money(spentHome, cur.home)}</Text>
               <Text style={ui.muted}>
                 of {money(b.total.home, cur.home)}
                 {cur.home !== cur.local ? `  ·  ≈ ${money(spentLocal, cur.local)}` : ""}

@@ -41,7 +41,7 @@ function Shell({ index, stripe, over, onPress, children }: {
   );
 }
 
-const Price = ({ text }: { text: string }) => <Text style={{ fontFamily: fonts.displayBold, fontSize: 22, color: colors.ink }}>{text}</Text>;
+const Price = ({ text }: { text: string }) => <Text style={{ fontFamily: fonts.displayBold, fontSize: 19, color: colors.ink }}>{text}</Text>;
 
 export function FlightCard({ f, cur, index }: { f: Flight; cur: Cur; index: number }) {
   return (

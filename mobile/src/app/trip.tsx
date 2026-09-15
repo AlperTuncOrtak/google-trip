@@ -20,12 +20,12 @@ function DateField({ label, value, min, onChange }: { label: string; value: stri
   };
   const pretty = date.toLocaleDateString("en-US", { month: "short", day: "numeric", weekday: "short" });
   return (
-    <View style={{ flex: 1, gap: 6 }}>
+    <View style={{ flexGrow: 1, flexBasis: 140, minWidth: 0, gap: 6 }}>
       <Text style={ui.hint}>{label}</Text>
       {Platform.OS === "web" ? (
         // community picker has no web build: use the browser's native date input
         <input type="date" value={value} min={iso(min)} onChange={(e) => e.target.value && onChange(e.target.value)}
-          style={{ padding: 12, borderRadius: 16, border: `1.5px solid ${colors.line}`, fontFamily: fonts.bodyBold, fontSize: 15, color: colors.ink }} />
+          style={{ width: "100%", boxSizing: "border-box", padding: 10, borderRadius: 14, border: `1.5px solid ${colors.line}`, fontFamily: fonts.bodyBold, fontSize: 15, color: colors.ink }} />
       ) : Platform.OS === "ios" ? (
         <DateTimePicker value={date} mode="date" display="compact" minimumDate={min} onChange={pick} style={{ alignSelf: "flex-start" }} />
       ) : (
@@ -114,7 +114,7 @@ export default function TripScreen() {
           <Text style={ui.label}>{mode === "total" ? "Total trip budget (all-in)" : "Budget per person"} 👇</Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <TextInput
-              style={{ flex: 1, minWidth: 0, width: "100%", fontFamily: fonts.displayBold, fontSize: 44, color: colors.ink, paddingVertical: 0 }}
+              style={{ flex: 1, minWidth: 0, width: "100%", fontFamily: fonts.displayBold, fontSize: 36, color: colors.ink, paddingVertical: 0 }}
               keyboardType="decimal-pad"
               placeholder="0"
               placeholderTextColor={colors.line}
@@ -135,7 +135,7 @@ export default function TripScreen() {
 
         <Section title="When & who" hint={nights > 0 ? `${nights} nights` : undefined} index={1}>
           <View style={[ui.card, { gap: 16 }]}>
-            <View style={{ flexDirection: "row", gap: 12 }}>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
               <DateField label="Departure" value={trip.departDate} min={tomorrow} onChange={(v) => setTrip({ ...trip, departDate: v })} />
               <DateField label="Return" value={trip.returnDate} min={tomorrow} onChange={(v) => setTrip({ ...trip, returnDate: v })} />
             </View>
