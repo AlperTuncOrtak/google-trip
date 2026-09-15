@@ -1,0 +1,3 @@
+{"profile": {"homeCity": {"name": "Warsaw", "iata": "WAW", "countryCode": "PL", "countryName": "Poland", "currency": "PLN"},
+             "activities": ["Street Food", "Museums & History"], "activitiesNote": "", "diet": "halal"},
+ "trip": {"budget": 9000, "departDate": "2026-10-10", "returnDate": "2026-10-15", "travelers": 1}}
