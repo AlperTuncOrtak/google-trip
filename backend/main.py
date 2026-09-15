@@ -18,6 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 
 import budget  # noqa: E402
 import currency  # noqa: E402
+import flights as google_flights  # noqa: E402
 import gemini  # noqa: E402
 import liteapi  # noqa: E402
 import samples  # noqa: E402
@@ -37,7 +38,7 @@ def providers():
     """Real module when its key is configured, sample data otherwise."""
     return {
         "ai": gemini if _live("GEMINI_API_KEY") else samples,
-        "flights": samples,  # no flight provider for the demo; links go to a plain Aviasales search
+        "flights": google_flights if _live("SERPAPI_KEY") else samples,
         "stays": liteapi if _live("LITEAPI_KEY") else samples,
     }
 
@@ -80,7 +81,7 @@ async def suggest(req: SuggestRequest):
     if key in _cache:
         return _cache[key]
     pv = providers()
-    sample = [name for name in ("ai", "flights") if pv[name] is samples]
+    sample = ["flights"] + (["ai"] if pv["ai"] is samples else [])  # destination fares are always sample
 
     p, t = req.profile, req.trip
     rates = await currency.usd_rates()

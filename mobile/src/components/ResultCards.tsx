@@ -57,7 +57,7 @@ export function FlightCard({ f, cur, index }: { f: Flight; cur: Cur; index: numb
         {f.overBudget && <Pill text="Over budget" color={colors.red} soft={colors.redSoft} />}
       </View>
       <Price text={bothMoney(f.price, cur.home, cur.local)} />
-      <Text style={ui.muted}>{f.seenAt ? `${ago(f.seenAt)} · ` : ""}View on Aviasales ↗</Text>
+      <Text style={ui.muted}>{f.seenAt ? `${ago(f.seenAt)} · ` : ""}{f.url.includes("google.") ? "View on Google Flights ↗" : "View flight ↗"}</Text>
     </Shell>
   );
 }

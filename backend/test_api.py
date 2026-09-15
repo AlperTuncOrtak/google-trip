@@ -17,7 +17,7 @@ def body(name):
 
 def offline(monkeypatch):
     """No API keys, no network: every provider falls back to samples."""
-    for k in ("GEMINI_API_KEY", "TRAVELPAYOUTS_TOKEN", "LITEAPI_KEY"):
+    for k in ("GEMINI_API_KEY", "TRAVELPAYOUTS_TOKEN", "LITEAPI_KEY", "SERPAPI_KEY"):
         monkeypatch.delenv(k, raising=False)
     japan = {"code": "JP", "name": "Japan", "currency": "JPY"}
     osaka = {"name": "Osaka", "iata": "OSA", "countryCode": "JP", "countryName": "Japan", "currency": "JPY"}
