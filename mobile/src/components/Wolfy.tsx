@@ -9,10 +9,13 @@ const POSES = {
   think: require("../../assets/wolfy.png"),
 };
 
+// the "think" artwork leans right inside its frame; nudge it so the dog sits centered in the circle
+const SHIFT: Record<Pose, number> = { happy: 0, sniff: 0, think: -0.12 };
+
 export function WolfyAvatar({ pose = "happy", size = 88 }: { pose?: Pose; size?: number }) {
   return (
     <View style={[s.avatar, { width: size, height: size, borderRadius: size / 2 }]}>
-      <Image source={POSES[pose]} style={{ width: size * 0.9, height: size * 1.05, marginTop: size * 0.18 }} resizeMode="contain" />
+      <Image source={POSES[pose]} style={{ width: size * 0.9, height: size * 1.05, marginTop: size * 0.18, transform: [{ translateX: SHIFT[pose] * size }] }} resizeMode="contain" />
     </View>
   );
 }
