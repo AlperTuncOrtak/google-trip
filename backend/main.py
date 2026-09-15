@@ -35,7 +35,7 @@ def providers():
     """Real module when its key is configured, sample data otherwise."""
     return {
         "ai": gemini if _live("GEMINI_API_KEY") else samples,
-        "flights": travelpayouts if _live("TRAVELPAYOUTS_TOKEN") else samples,
+        "flights": samples,  # no flight provider for the demo; links go to a plain Aviasales search
         "stays": liteapi if _live("LITEAPI_KEY") else samples,
     }
 
@@ -166,8 +166,7 @@ async def plan(req: PlanRequest):
             for f in b["flights"]
         ],
         "stays": [
-            {"name": s["name"], "stars": s["stars"], "price": m(s["priceUsd"]),
-             "commission": m(s["commissionUsd"]), "overBudget": s["overBudget"]}
+            {"name": s["name"], "stars": s["stars"], "price": m(s["priceUsd"]), "overBudget": s["overBudget"]}
             for s in b["stays"]
         ],
         "activities": found["activities"],

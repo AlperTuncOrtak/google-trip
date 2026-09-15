@@ -5,6 +5,8 @@
 - **Bağlam:** Google Hackathon, 5 kişi, 5 saat
 - **Repo:** https://github.com/AlperTuncOrtak/google-trip
 
+> **Güncelleme (2026-09-15, ekip kararı):** Gelir modeli kaldırıldı. Affiliate linkleri, Travelpayouts marker'ı, LiteAPI komisyonu (margin artık 0) ve `DEMO_MODE` / "We earn" etiketi sistemde yok. Uçuş kartları marker'sız Aviasales aramasını açar. Uçuş fiyatları demo için örnek veridir (Travelpayouts fiyat API'si bağlanmadı), şehir ve ülke araması Travelpayouts'un anahtarsız uçlarını kullanmaya devam eder. Anahtarı olmayan her servis örnek veriyle çalışır ve bu, arayüzde "Sample data" etiketiyle gösterilir. Aşağıdaki gelir modeline ait bölümler (§3 Uçuş/Otel satırları, §4 Komisyon, §8.3, §11) bu yüzden geçersizdir.
+
 ---
 
 ## 1. Amaç

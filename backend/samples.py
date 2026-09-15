@@ -46,7 +46,7 @@ async def flights(origin: str, destination: str, depart: str, ret: str) -> list[
 
 
 async def stays(city: str, country_code: str, checkin: str, checkout: str, adults: int, nationality: str) -> list[dict]:
-    return [{"name": f"Sample hotel {i + 1}, {city}", "stars": s, "priceUsd": p, "commissionUsd": round(p * 5 / 105, 2)}
+    return [{"name": f"Sample hotel {i + 1}, {city}", "stars": s, "priceUsd": p}
             for i, (s, p) in enumerate([(3, 420), (4, 610), (4, 780), (5, 1150), (5, 1900)])]
 
 

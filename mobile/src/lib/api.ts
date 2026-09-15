@@ -1,5 +1,4 @@
 export const BASE_URL = "http://192.0.0.2:8000"; // laptop running uvicorn; Cloud Run URL after deploy
-export const DEMO_MODE = true;
 
 export type Diet = "none" | "vegetarian" | "vegan" | "halal" | "gluten_free";
 export type City = { name: string; iata: string; countryCode: string; countryName: string; currency: string };
@@ -16,7 +15,7 @@ export type Flight = {
   airline: string; departAt: string; returnAt: string; transfers: number;
   price: Money; url: string; seenAt: string; overBudget: boolean;
 };
-export type Stay = { name: string; stars: number; price: Money; commission: Money; overBudget: boolean };
+export type Stay = { name: string; stars: number; price: Money; overBudget: boolean };
 export type Place = { name: string; description: string };
 export type Plan = {
   destination: { city: string; iata: string; countryCode: string; countryName: string; reason: string };

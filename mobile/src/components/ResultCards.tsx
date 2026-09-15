@@ -1,6 +1,6 @@
 import { Linking, Pressable, Text, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import { bothMoney, DEMO_MODE, Flight, money, Place, Stay } from "../lib/api";
+import { bothMoney, Flight, Place, Stay } from "../lib/api";
 import { colors, fonts, ui } from "../lib/theme";
 
 export type Cur = { home: string; local: string };
@@ -57,7 +57,7 @@ export function FlightCard({ f, cur, index }: { f: Flight; cur: Cur; index: numb
         {f.overBudget && <Pill text="Over budget" color={colors.red} soft={colors.redSoft} />}
       </View>
       <Price text={bothMoney(f.price, cur.home, cur.local)} />
-      <Text style={ui.muted}>{ago(f.seenAt)}{DEMO_MODE ? " · Affiliate link ↗" : " ↗"}</Text>
+      <Text style={ui.muted}>{f.seenAt ? `${ago(f.seenAt)} · ` : ""}View on Aviasales ↗</Text>
     </Shell>
   );
 }
@@ -73,7 +73,6 @@ export function StayCard({ s, cur, index }: { s: Stay; cur: Cur; index: number }
         {s.overBudget && <Pill text="Over budget" color={colors.red} soft={colors.redSoft} />}
       </View>
       <Price text={bothMoney(s.price, cur.home, cur.local)} />
-      {DEMO_MODE && <Pill text={`💸 We earn ≈ ${money(s.commission.home, cur.home)}`} color={colors.green} soft={colors.greenSoft} />}
     </Shell>
   );
 }
