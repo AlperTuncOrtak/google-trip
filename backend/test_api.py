@@ -34,7 +34,11 @@ def offline(monkeypatch):
     monkeypatch.setattr(travelpayouts, "list_countries", countries)
     monkeypatch.setattr(travelpayouts, "city_by_name", city)
     monkeypatch.setattr(travelpayouts, "city_by_iata", city)
+    async def photo(_):
+        return ""
+
     monkeypatch.setattr(currency, "usd_rates", rates)
+    monkeypatch.setattr(main, "city_photo", photo)
     main._cache.clear()
 
 

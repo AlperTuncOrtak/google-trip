@@ -18,7 +18,7 @@ export type Flight = {
 export type Stay = { name: string; stars: number; price: Money; overBudget: boolean };
 export type Place = { name: string; description: string };
 export type Plan = {
-  destination: { city: string; iata: string; countryCode: string; countryName: string; reason: string };
+  destination: { city: string; iata: string; countryCode: string; countryName: string; reason: string; photo: string };
   currencies: { home: string; local: string };
   budget: {
     total: Money; flightAndStay: Money; dailySpendPerPerson: Money; days: number;

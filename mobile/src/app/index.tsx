@@ -54,7 +54,7 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView contentContainerStyle={ui.page} keyboardShouldPersistTaps="handled">
-      <Hero eyebrow="STEP 1 OF 2" title="Hi! I'm Wolfy" subtitle="Let's personalize your trip." pose="happy" />
+      <Hero step={0} title="Hi! I'm Wolfy" subtitle="Let's personalize your trip." pose="happy" />
 
       <View style={ui.sheet}>
         <Section title="Where do you live?" hint="flights leave from here" index={0}>

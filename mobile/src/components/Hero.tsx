@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { colors, ui } from "../lib/theme";
+import Steps from "./Steps";
 import { Pose, WolfyAvatar } from "./Wolfy";
 
 // soft Google-colored orbs give the header depth without images
@@ -14,12 +15,13 @@ function Orbs() {
   );
 }
 
-export default function Hero({ eyebrow, title, subtitle, pose, children }: {
-  eyebrow?: string; title: string; subtitle?: string; pose?: Pose; children?: ReactNode;
+export default function Hero({ eyebrow, title, subtitle, pose, step, children }: {
+  eyebrow?: string; title: string; subtitle?: string; pose?: Pose; step?: 0 | 1 | 2; children?: ReactNode;
 }) {
   return (
     <View style={s.hero}>
       <Orbs />
+      {step !== undefined && <Steps current={step} />}
       <View style={s.row}>
         <View style={{ flex: 1, gap: 6 }}>
           {eyebrow && <Text style={ui.eyebrow}>{eyebrow}</Text>}

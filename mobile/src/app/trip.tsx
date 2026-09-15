@@ -107,7 +107,7 @@ export default function TripScreen() {
 
   return (
     <ScrollView contentContainerStyle={ui.page} keyboardShouldPersistTaps="handled">
-      <Hero eyebrow="STEP 2 OF 2" title="Plan your trip" subtitle="Don't know where yet? No problem. Tell your budget — we'll handle the rest." pose="think" />
+      <Hero step={1} title="Plan your trip" subtitle="Don't know where yet? No problem. Tell your budget — we'll handle the rest." pose="think" />
 
       <View style={ui.sheet}>
         <Animated.View entering={FadeInDown.springify()} style={[ui.card, { gap: 14, marginTop: -8 }]}>

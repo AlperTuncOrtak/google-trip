@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+import re
 from pathlib import Path
 
 # local dev: pick up backend/.env before provider modules read their keys (Cloud Run sets real env vars)
@@ -11,6 +12,7 @@ if _env.exists():
             k, v = line.split("=", 1)
             os.environ.setdefault(k.strip(), v.strip())
 
+import httpx  # noqa: E402
 from fastapi import FastAPI, HTTPException  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 
@@ -38,6 +40,18 @@ def providers():
         "flights": samples,  # no flight provider for the demo; links go to a plain Aviasales search
         "stays": liteapi if _live("LITEAPI_KEY") else samples,
     }
+
+
+async def city_photo(city: str) -> str:
+    """Lead image of the city's Wikipedia article; empty string when there is none."""
+    try:
+        async with httpx.AsyncClient(timeout=8, headers={"User-Agent": "GoogleTrip/1.0 (https://github.com/AlperTuncOrtak/google-trip)"}) as client:
+            r = await client.get(f"https://en.wikipedia.org/api/rest_v1/page/summary/{city.replace(' ', '_')}")
+            data = r.json() if r.status_code == 200 else {}
+        src = (data.get("thumbnail") or data.get("originalimage") or {}).get("source", "")
+        return re.sub(r"/\d+px-", "/960px-", src)  # phone-sized rendition instead of the 3840px original
+    except Exception:
+        return ""
 
 
 def _err(r):
@@ -126,11 +140,12 @@ async def plan(req: PlanRequest):
     depart, ret = str(t.departDate), str(t.returnDate)
     days = (t.returnDate - t.departDate).days
 
-    f_res, s_res, pl_res, rates = await asyncio.gather(
+    f_res, s_res, pl_res, rates, photo = await asyncio.gather(
         pv["flights"].flights(p.homeCity.iata, dest["iata"], depart, ret),
         pv["stays"].stays(dest["name"], country["code"], depart, ret, t.travelers, p.homeCity.countryCode),
         pv["ai"].places(dest["name"], country["name"], local, p.model_dump()),
         currency.usd_rates(),
+        city_photo(dest["name"]),
         return_exceptions=True,
     )
     if isinstance(rates, Exception):
@@ -153,7 +168,8 @@ async def plan(req: PlanRequest):
 
     result = {
         "destination": {"city": dest["name"], "iata": dest["iata"], "countryCode": country["code"],
-                        "countryName": country["name"], "reason": reason},
+                        "countryName": country["name"], "reason": reason,
+                        "photo": photo if isinstance(photo, str) else ""},
         "currencies": {"home": home, "local": local},
         "budget": {
             "total": m(budget_usd), "flightAndStay": m(b["flightAndStayUsd"]),

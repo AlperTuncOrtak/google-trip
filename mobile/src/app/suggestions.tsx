@@ -24,7 +24,7 @@ export default function SuggestionsScreen() {
   return (
     <ScrollView contentContainerStyle={ui.page}>
       <Hero
-        eyebrow="PICKED FOR YOU"
+        step={2}
         title={`I found ${n} place${n > 1 ? "s" : ""} you'll love!`}
         subtitle={`Matched to your interests and your ${money(trip.budget, home)} budget.`}
         pose="happy"
