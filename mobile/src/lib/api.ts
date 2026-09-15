@@ -59,5 +59,9 @@ export function money(value: number, currency: string) {
   }
 }
 
-export const bothMoney = (m: Money, home: string, local: string) =>
+// "JP" -> 🇯🇵 via regional indicator symbols
+export const flag = (countryCode: string) =>
+  countryCode.length === 2 ? String.fromCodePoint(...[...countryCode.toUpperCase()].map((c) => 0x1f1a5 + c.charCodeAt(0))) : "🌍";
+
+export const bothMoney =(m: Money, home: string, local: string) =>
   home === local ? money(m.home, home) : `${money(m.home, home)} ≈ ${money(m.local, local)}`;
