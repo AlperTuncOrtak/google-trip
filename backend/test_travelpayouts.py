@@ -1,3 +1,5 @@
+import asyncio
+
 import travelpayouts as tp
 
 
@@ -22,6 +24,20 @@ def test_to_flight_maps_fields():
 def test_to_destinations_keeps_cheapest_per_city():
     rows = [{"destination": "BCN", "price": 90}, {"destination": "BCN", "price": 70}, {"destination": "IST", "price": 120}]
     assert tp.to_destinations(rows) == [{"iata": "BCN", "priceUsd": 70.0}, {"iata": "IST", "priceUsd": 120.0}]
+
+
+def test_search_places_drops_fuzzy_noise(monkeypatch):
+    async def fake_get(url, params):
+        return [{"code": "IST", "name": "Istanbul", "country_code": "TR"},
+                {"code": "ELS", "name": "East London", "country_code": "ZA"}]
+
+    async def fake_countries():
+        return {"TR": {"name": "Turkiye", "currency": "TRY"}}
+
+    monkeypatch.setattr(tp, "_get", fake_get)
+    monkeypatch.setattr(tp, "_countries_by_code", fake_countries)
+    assert [c["name"] for c in asyncio.run(tp.search_places("ist"))] == ["Istanbul"]
+    assert [c["name"] for c in asyncio.run(tp.search_places("xyz"))] == ["Istanbul", "East London"]
 
 
 def test_to_city_uses_country_currency():

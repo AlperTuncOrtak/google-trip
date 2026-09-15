@@ -5,7 +5,7 @@ import Chip from "../components/Chip";
 import Wolfy from "../components/Wolfy";
 import { City, Diet, getPlaces } from "../lib/api";
 import { useStore } from "../lib/store";
-import { ui } from "../lib/theme";
+import { colors, ui } from "../lib/theme";
 
 const ACTIVITIES = [
   "Nature & Hiking", "Museums & History", "Nightlife", "Beach & Sea",
@@ -62,8 +62,10 @@ export default function ProfileScreen() {
           autoCorrect={false}
         />
         {results.map((c) => (
-          <Pressable key={c.iata + c.countryCode} onPress={() => pickCity(c)} style={{ paddingVertical: 10 }}>
+          <Pressable key={c.iata + c.countryCode} onPress={() => pickCity(c)} accessibilityRole="button"
+            style={[ui.card, { flexDirection: "row", justifyContent: "space-between", marginTop: 6 }]}>
             <Text>{c.name}, {c.countryName} ({c.iata})</Text>
+            <Text style={{ color: colors.blue, fontWeight: "700" }}>›</Text>
           </Pressable>
         ))}
         {!!searchError && <Text style={ui.error}>{searchError}</Text>}
@@ -106,6 +108,11 @@ export default function ProfileScreen() {
       >
         <Text style={ui.buttonText}>Continue</Text>
       </Pressable>
+      {!canContinue && (
+        <Text style={[ui.muted, { textAlign: "center" }]}>
+          {!profile.homeCity ? "Pick your home city from the list." : "Pick at least one activity."}
+        </Text>
+      )}
     </ScrollView>
   );
 }

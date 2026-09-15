@@ -68,7 +68,9 @@ async def search_places(term: str) -> list[dict]:
     rows = await _get("https://autocomplete.travelpayouts.com/places2",
                       {"term": term, "locale": "en", "types[]": "city"})
     countries = await _countries_by_code()
-    return [to_city(r["code"], r["name"], r["country_code"], countries) for r in rows[:8]]
+    cities = [to_city(r["code"], r["name"], r["country_code"], countries) for r in rows if r.get("name")]
+    close = [c for c in cities if term.strip().lower() in c["name"].lower()]  # autocomplete pads with fuzzy noise
+    return (close or cities[:3])[:8]
 
 
 async def city_by_name(name: str, country_code: str) -> dict | None:

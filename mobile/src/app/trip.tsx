@@ -54,8 +54,11 @@ export default function TripScreen() {
     trip.returnDate <= trip.departDate ? "Return must be after departure." :
     "";
 
-  const matches = query.trim().length === 0 ? [] :
-    countries.filter((c) => c.name.toLowerCase().startsWith(query.trim().toLowerCase())).slice(0, 6);
+  const q = query.trim().toLowerCase();
+  const matches = q.length === 0 ? [] : countries
+    .filter((c) => c.name.toLowerCase().includes(q))
+    .sort((a, b) => Number(!a.name.toLowerCase().startsWith(q)) - Number(!b.name.toLowerCase().startsWith(q)))
+    .slice(0, 6);
 
   const go = (path: "/results" | "/suggestions") => {
     setTrip({ ...trip, budget });
@@ -101,8 +104,10 @@ export default function TripScreen() {
           onChangeText={(t) => { setCountry(null); setQuery(t); }}
         />
         {!country && matches.map((c) => (
-          <Pressable key={c.code} onPress={() => { setCountry(c); setQuery(""); }} style={{ paddingVertical: 10 }}>
+          <Pressable key={c.code} onPress={() => { setCountry(c); setQuery(""); }} accessibilityRole="button"
+            style={[ui.card, { flexDirection: "row", justifyContent: "space-between", marginTop: 6 }]}>
             <Text>{c.name} ({c.currency})</Text>
+            <Text style={{ color: colors.blue, fontWeight: "700" }}>›</Text>
           </Pressable>
         ))}
         {!!loadError && <Text style={ui.error}>{loadError}</Text>}
@@ -114,6 +119,9 @@ export default function TripScreen() {
         onPress={() => go("/results")} accessibilityRole="button">
         <Text style={ui.buttonText}>Plan my trip</Text>
       </Pressable>
+      {!problem && !country && (
+        <Text style={[ui.muted, { textAlign: "center" }]}>Pick a country from the list to plan, or let Wolfy suggest one.</Text>
+      )}
 
       <Pressable style={[ui.button, { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.blue }, !!problem && ui.buttonDisabled]}
         disabled={!!problem} onPress={() => go("/suggestions")} accessibilityRole="button">

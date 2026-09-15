@@ -30,18 +30,15 @@ def health():
     return {"ok": True}
 
 
+# /places and /countries use keyless Travelpayouts endpoints, so they are always live
 @app.get("/places")
 async def places(term: str):
-    if USE_FIXTURES:
-        return fixture("places.json")
     import travelpayouts
     return await travelpayouts.search_places(term) if len(term) >= 2 else []
 
 
 @app.get("/countries")
 async def countries():
-    if USE_FIXTURES:
-        return fixture("countries.json")
     import travelpayouts
     return await travelpayouts.list_countries()
 
