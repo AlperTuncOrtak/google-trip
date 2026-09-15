@@ -22,7 +22,11 @@ function DateField({ label, value, min, onChange }: { label: string; value: stri
   return (
     <View style={{ flex: 1, gap: 6 }}>
       <Text style={ui.hint}>{label}</Text>
-      {Platform.OS === "ios" ? (
+      {Platform.OS === "web" ? (
+        // community picker has no web build: use the browser's native date input
+        <input type="date" value={value} min={iso(min)} onChange={(e) => e.target.value && onChange(e.target.value)}
+          style={{ padding: 12, borderRadius: 16, border: `1.5px solid ${colors.line}`, fontFamily: fonts.bodyBold, fontSize: 15, color: colors.ink }} />
+      ) : Platform.OS === "ios" ? (
         <DateTimePicker value={date} mode="date" display="compact" minimumDate={min} onChange={pick} style={{ alignSelf: "flex-start" }} />
       ) : (
         <>

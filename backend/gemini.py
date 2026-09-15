@@ -5,8 +5,10 @@ import os
 from google import genai
 from pydantic import BaseModel, Field
 
-MODEL = "gemini-3.8-flash"
-TIMEOUT = 40
+MODEL = "gemini-3.8-flash"  # Maps-grounded call
+FAST_MODEL = "gemini-3.5-flash-lite"  # JSON-only calls: city pick, ranking, structuring
+TIMEOUT = 90  # grounded call measured 15-60s
+MAX_SOURCES = 8
 _client = None
 
 DIETS = {
@@ -71,15 +73,16 @@ def extract_sources(interaction) -> list[dict]:
             continue
         for block in step.content or []:
             for a in getattr(block, "annotations", None) or []:
-                if a.type == "place_citation" and a.url and a.url not in seen:
-                    seen.add(a.url)
-                    out.append({"title": a.name, "uri": a.url})
-    return out
+                title = (a.name or "").removesuffix(" - Google Maps")
+                if a.type == "place_citation" and a.url and a.url not in seen and title not in seen:
+                    seen.update((a.url, title))
+                    out.append({"title": title, "uri": a.url})
+    return out[:MAX_SOURCES]
 
 
 def _json(prompt: str, model: type[BaseModel]) -> BaseModel:
     it = client().interactions.create(
-        model=MODEL,
+        model=FAST_MODEL,
         input=prompt,
         response_format={"type": "text", "mime_type": "application/json", "schema": model.model_json_schema()},
     )
@@ -115,7 +118,7 @@ async def places(city: str, country_name: str, local_currency: str, profile: dic
            f"1) List 5 activities or attractions in {city} matching what they like.\n"
            f"2) List 5 restaurants in {city}. {diet_rule(profile.get('diet', 'none'))}\n"
            f"3) Estimate typical daily spend for one person on food and activities in {local_currency}.\n"
-           f"Use real places from Google Maps. Answer in English.")
+           f"Use real places from Google Maps. Be concise: one short line per item. Answer in English.")
     text, sources = await _run(_grounded, ask)
     structure = (f"Convert these notes to JSON. Keep exactly 5 activities and 5 food places if available. "
                  f"Drop any food place that does not satisfy: {diet_rule(profile.get('diet', 'none'))}\n\n{text}")

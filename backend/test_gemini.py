@@ -22,9 +22,10 @@ def test_extract_sources_dedupes_place_citations():
     it = NS(steps=[
         NS(type="thinking", content=[]),
         NS(type="model_output", content=[
-            NS(annotations=[ann("Osaka Castle", "https://maps/1"), ann("Osaka Castle", "https://maps/1")]),
+            NS(annotations=[ann("Osaka Castle - Google Maps", "https://maps/1"), ann("Osaka Castle", "https://maps/1")]),
             NS(annotations=None),
-            NS(annotations=[ann("Kuromon Market", "https://maps/2"), NS(type="url_citation", name="x", url="y")]),
+            NS(annotations=[ann("Kuromon Market", "https://maps/2"), NS(type="url_citation", name="x", url="y"),
+                            ann("Osaka Castle", "https://maps/3")]),  # same title, different link
         ]),
     ])
     assert gemini.extract_sources(it) == [
