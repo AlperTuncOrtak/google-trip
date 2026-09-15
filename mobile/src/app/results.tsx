@@ -10,6 +10,7 @@ import { flag, money, Plan, postPlan } from "../lib/api";
 import { useStore } from "../lib/store";
 import { colors, fonts, shadow, ui } from "../lib/theme";
 import { useRequest } from "../lib/useRequest";
+import { useWide } from "../lib/useWide";
 
 const TABS = ["Flights", "Stays", "Activities", "Food"] as const;
 type Tab = (typeof TABS)[number];
@@ -20,6 +21,7 @@ const shortDate = (s: string) => new Date(`${s}T12:00:00`).toLocaleDateString("e
 export default function ResultsScreen() {
   const { profile, trip, destination } = useStore();
   const [tab, setTab] = useState<Tab>("Flights");
+  const wide = useWide();
   const { data, error, retry } = useRequest(() => postPlan(profile, trip, destination ?? { countryCode: "" }));
 
   if (!destination) return <WolfyStatus message="Pick a country first!" />;
@@ -69,8 +71,8 @@ export default function ResultsScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.surface }}>
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 150, gap: 18, width: "100%", maxWidth: 560, alignSelf: "center" }}>
-        <Steps current={2} />
+      <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 32, paddingBottom: 150, gap: 18, width: "100%", maxWidth: 560, alignSelf: "center" }}>
+        {!wide && <Steps current={2} />}
 
         {/* destination hero card */}
         <Animated.View entering={FadeInDown.springify()} style={[{ borderRadius: 24, backgroundColor: colors.bg }, shadow]}>
