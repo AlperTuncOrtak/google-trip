@@ -1,24 +1,43 @@
 import asyncio
-import json
 import logging
+import os
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+# local dev: pick up backend/.env before provider modules read their keys (Cloud Run sets real env vars)
+_env = Path(__file__).parent / ".env"
+if _env.exists():
+    for line in _env.read_text().splitlines():
+        if "=" in line and not line.lstrip().startswith("#"):
+            k, v = line.split("=", 1)
+            os.environ.setdefault(k.strip(), v.strip())
 
-import budget
-import currency
-from models import PlanRequest, SuggestRequest
+from fastapi import FastAPI, HTTPException  # noqa: E402
+from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 
-USE_FIXTURES = True
-FIX = Path(__file__).parent / "fixtures"
+import budget  # noqa: E402
+import currency  # noqa: E402
+import gemini  # noqa: E402
+import liteapi  # noqa: E402
+import samples  # noqa: E402
+import travelpayouts  # noqa: E402
+from models import PlanRequest, SuggestRequest  # noqa: E402
+
 app = FastAPI(title="Google Trip API")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])  # Expo web preview
 _cache: dict[str, dict] = {}  # ponytail: in-process cache; Redis/Memorystore if >1 instance
 
 
-def fixture(name: str):
-    return json.loads((FIX / name).read_text())
+def _live(key: str) -> bool:
+    return bool(os.environ.get(key))
+
+
+def providers():
+    """Real module when its key is configured, sample data otherwise."""
+    return {
+        "ai": gemini if _live("GEMINI_API_KEY") else samples,
+        "flights": travelpayouts if _live("TRAVELPAYOUTS_TOKEN") else samples,
+        "stays": liteapi if _live("LITEAPI_KEY") else samples,
+    }
 
 
 def _err(r):
@@ -27,36 +46,32 @@ def _err(r):
 
 @app.get("/health")
 def health():
-    return {"ok": True}
+    return {"ok": True, "live": {k: v is not samples for k, v in providers().items()}}
 
 
 # /places and /countries use keyless Travelpayouts endpoints, so they are always live
 @app.get("/places")
 async def places(term: str):
-    import travelpayouts
     return await travelpayouts.search_places(term) if len(term) >= 2 else []
 
 
 @app.get("/countries")
 async def countries():
-    import travelpayouts
     return await travelpayouts.list_countries()
 
 
 @app.post("/suggest")
 async def suggest(req: SuggestRequest):
-    if USE_FIXTURES:
-        return fixture("suggest_response.json")
     key = "suggest" + req.model_dump_json()
     if key in _cache:
         return _cache[key]
-    import gemini
-    import travelpayouts
+    pv = providers()
+    sample = [name for name in ("ai", "flights") if pv[name] is samples]
 
     p, t = req.profile, req.trip
     rates = await currency.usd_rates()
     budget_usd = t.budget / rates.get(p.homeCity.currency, 1.0)
-    cands = await travelpayouts.cheapest_destinations(p.homeCity.iata, str(t.departDate), str(t.returnDate))
+    cands = await pv["flights"].cheapest_destinations(p.homeCity.iata, str(t.departDate), str(t.returnDate))
     cands = [c for c in cands if c["priceUsd"] * t.travelers <= budget_usd][:30]
     cities = await asyncio.gather(*(travelpayouts.city_by_iata(c["iata"]) for c in cands))
     enriched = [
@@ -64,9 +79,9 @@ async def suggest(req: SuggestRequest):
         for c, ci in zip(cands, cities) if ci
     ]
     if not enriched:
-        return {"suggestions": []}
+        return {"suggestions": [], "sample": sample}
 
-    ranked = await gemini.rank_suggestions(enriched, p.model_dump(), t.model_dump(mode="json"))
+    ranked = await pv["ai"].rank_suggestions(enriched, p.model_dump(), t.model_dump(mode="json"))
     by_iata = {c["iata"]: c for c in enriched}
     out = []
     for r in ranked:
@@ -77,7 +92,7 @@ async def suggest(req: SuggestRequest):
                 "iata": c["iata"], "localCurrency": c["currency"], "reason": r["reason"],
                 "flightPrice": currency.to_money(c["priceUsd"] * t.travelers, rates, p.homeCity.currency, c["currency"]),
             })
-    result = {"suggestions": out[:3]}
+    result = {"suggestions": out[:3], "sample": sample}
     if out:
         _cache[key] = result
     return result
@@ -85,14 +100,10 @@ async def suggest(req: SuggestRequest):
 
 @app.post("/plan")
 async def plan(req: PlanRequest):
-    if USE_FIXTURES:
-        return fixture("plan_response.json")
     key = "plan" + req.model_dump_json()
     if key in _cache:
         return _cache[key]
-    import gemini
-    import liteapi
-    import travelpayouts
+    pv = providers()
 
     p, t = req.profile, req.trip
     country = next((c for c in await travelpayouts.list_countries() if c["code"] == req.countryCode.upper()), None)
@@ -103,7 +114,7 @@ async def plan(req: PlanRequest):
         if req.city:
             dest, reason = await travelpayouts.city_by_iata(req.city.iata), req.city.reason
         else:
-            picked = await gemini.pick_city(country["name"], p.model_dump())
+            picked = await pv["ai"].pick_city(country["name"], p.model_dump())
             dest, reason = await travelpayouts.city_by_name(picked["city"], country["code"]), picked["reason"]
     except Exception:
         logging.exception("destination lookup failed")
@@ -116,9 +127,9 @@ async def plan(req: PlanRequest):
     days = (t.returnDate - t.departDate).days
 
     f_res, s_res, pl_res, rates = await asyncio.gather(
-        travelpayouts.flights(p.homeCity.iata, dest["iata"], depart, ret),
-        liteapi.stays(dest["name"], country["code"], depart, ret, t.travelers, p.homeCity.countryCode),
-        gemini.places(dest["name"], country["name"], local, p.model_dump()),
+        pv["flights"].flights(p.homeCity.iata, dest["iata"], depart, ret),
+        pv["stays"].stays(dest["name"], country["code"], depart, ret, t.travelers, p.homeCity.countryCode),
+        pv["ai"].places(dest["name"], country["name"], local, p.model_dump()),
         currency.usd_rates(),
         return_exceptions=True,
     )
@@ -163,6 +174,7 @@ async def plan(req: PlanRequest):
         "food": found["food"],
         "sources": found["sources"],
         "errors": errors,
+        "sample": [cat for cat, prov in (("flights", "flights"), ("stays", "stays"), ("places", "ai")) if pv[prov] is samples],
     }
     if not any(errors.values()):
         _cache[key] = result

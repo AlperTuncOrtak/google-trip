@@ -31,6 +31,11 @@ export default function SuggestionsScreen() {
       />
 
       <View style={ui.sheet}>
+        {data.sample?.length > 0 && (
+          <View style={[ui.pill, { alignSelf: "flex-start", backgroundColor: colors.yellowSoft }]}>
+            <Text style={[ui.pillText, { color: "#B06000" }]}>Sample destinations</Text>
+          </View>
+        )}
         {data.suggestions.map((s, i) => {
           const a = accent(i);
           return (

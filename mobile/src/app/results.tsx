@@ -37,10 +37,19 @@ export default function ResultsScreen() {
     </View>
   );
 
-  const section = (key: keyof Plan["errors"], count: number, render: () => ReactNode) =>
-    data.errors[key] ? <Text style={[ui.error, { textAlign: "center" }]}>Unavailable right now — try again in a moment.</Text>
-      : count === 0 ? <Text style={[ui.hint, { textAlign: "center" }]}>No results found.</Text>
-      : render();
+  const section = (key: keyof Plan["errors"], count: number, render: () => ReactNode) => {
+    if (data.errors[key]) return <Text style={[ui.error, { textAlign: "center" }]}>Unavailable right now — try again in a moment.</Text>;
+    if (count === 0) return <Text style={[ui.hint, { textAlign: "center" }]}>No results found.</Text>;
+    const sample = (data.sample ?? []).includes(key);
+    return (
+      <>
+        <View style={[ui.pill, { alignSelf: "flex-start", backgroundColor: sample ? colors.yellowSoft : colors.greenSoft }]}>
+          <Text style={[ui.pillText, { color: sample ? "#B06000" : colors.green }]}>{sample ? "Sample data" : "● Live data"}</Text>
+        </View>
+        {render()}
+      </>
+    );
+  };
 
   return (
     <ScrollView contentContainerStyle={ui.page}>

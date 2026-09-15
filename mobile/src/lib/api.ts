@@ -31,6 +31,7 @@ export type Plan = {
   food: Place[];
   sources: { title: string; uri: string }[];
   errors: { flights: string | null; stays: string | null; places: string | null };
+  sample: ("flights" | "stays" | "places")[]; // categories served from stand-in data (API key not configured)
 };
 export type Destination = { countryCode: string; city?: { name: string; iata: string; reason: string } };
 
@@ -47,7 +48,7 @@ async function call<T>(path: string, body?: unknown): Promise<T> {
 export const getPlaces = (term: string) => call<City[]>(`/places?term=${encodeURIComponent(term)}`);
 export const getCountries = () => call<Country[]>("/countries");
 export const postSuggest = (profile: Profile, trip: Trip) =>
-  call<{ suggestions: Suggestion[] }>("/suggest", { profile, trip });
+  call<{ suggestions: Suggestion[]; sample: string[] }>("/suggest", { profile, trip });
 export const postPlan = (profile: Profile, trip: Trip, destination: Destination) =>
   call<Plan>("/plan", { profile, trip, ...destination });
 

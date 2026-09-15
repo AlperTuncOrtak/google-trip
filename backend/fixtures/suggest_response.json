@@ -1,8 +1,0 @@
-{"suggestions": [
-  {"countryCode": "JP", "countryName": "Japan", "city": "Osaka", "iata": "OSA", "localCurrency": "JPY",
-   "reason": "Street food capital with great history museums.", "flightPrice": {"home": 3400, "local": 124000}},
-  {"countryCode": "ES", "countryName": "Spain", "city": "Barcelona", "iata": "BCN", "localCurrency": "EUR",
-   "reason": "Tapas everywhere and world-class museums.", "flightPrice": {"home": 620, "local": 145}},
-  {"countryCode": "TR", "countryName": "Turkey", "city": "Istanbul", "iata": "IST", "localCurrency": "TRY",
-   "reason": "Halal street food and 2,000 years of history.", "flightPrice": {"home": 780, "local": 8100}}
-]}
