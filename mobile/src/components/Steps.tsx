@@ -11,7 +11,7 @@ export default function Steps({ current }: { current: 0 | 1 | 2 }) {
         const on = i === current;
         return (
           <View key={label} style={{ flex: 1, alignItems: "center", gap: 6 }}>
-            <View style={{ flexDirection: "row", alignItems: "center", alignSelf: "stretch" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", alignSelf: "stretch", height: 16 }}>
               <View style={{ flex: 1, height: 3, backgroundColor: i === 0 ? "transparent" : i <= current ? colors.blue : colors.line }} />
               <View style={{
                 width: on ? 16 : 12, height: on ? 16 : 12, borderRadius: 8,
